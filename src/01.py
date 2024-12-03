@@ -4,8 +4,9 @@ from collections import defaultdict
 parser = setup_parser()
 args = parser.parse_args()
 
+
 @timer
-def get_first_solution(test: bool = args.test):
+def get_first_solution(test: bool = False):
     inpt = read_input("01", test=test)
 
     l1 = [int(s.split("   ")[0]) for s in inpt]
@@ -21,8 +22,9 @@ def get_first_solution(test: bool = args.test):
 
     return total
 
+
 @timer
-def get_second_solution(test: bool = args.test):
+def get_second_solution(test: bool = False):
     inpt = read_input("01", test=test)
 
     l1 = [int(s.split("   ")[0]) for s in inpt]
@@ -40,5 +42,6 @@ def get_second_solution(test: bool = args.test):
 
     return score
 
-print(f" P1: {get_first_solution()}")
-print(f" P2: {get_second_solution()}")
+
+print(f" P1: {get_first_solution(test=args.test)}")
+print(f" P2: {get_second_solution(test=args.test)}")

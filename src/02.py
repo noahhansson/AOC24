@@ -4,7 +4,8 @@ parser = setup_parser()
 args = parser.parse_args()
 test_run = args.test
 
-def parse_errors(row: list[int], p2: bool=False) -> bool:
+
+def parse_errors(row: list[int], p2: bool = False) -> bool:
 
     prev_increment = 0
 
@@ -16,11 +17,11 @@ def parse_errors(row: list[int], p2: bool=False) -> bool:
             or ((prev_increment > 0) and (increment < 0))
         ):
             if p2:
-                #When error is encountered the faulty level is either in place,
+                # When error is encountered the faulty level is either in place,
                 # ahead, or behind. Try again for all cases
-                row_fix_a = row[:i-1] + row[i:]
-                row_fix_b = row[:i] + row[i+1:]
-                row_fix_c = row[:i+1] + row[i+2:]
+                row_fix_a = row[: i - 1] + row[i:]
+                row_fix_b = row[:i] + row[i + 1 :]
+                row_fix_c = row[: i + 1] + row[i + 2 :]
                 return (
                     parse_errors(row_fix_a, p2=False)
                     or parse_errors(row_fix_b, p2=False)
@@ -32,6 +33,7 @@ def parse_errors(row: list[int], p2: bool=False) -> bool:
         prev_increment = increment
 
     return True
+
 
 @timer
 def get_first_solution(test: bool = test_run):
@@ -45,6 +47,7 @@ def get_first_solution(test: bool = test_run):
 
     return n_safe
 
+
 @timer
 def get_second_solution(test: bool = test_run):
     inpt = read_input("02", test=test)
@@ -57,5 +60,6 @@ def get_second_solution(test: bool = test_run):
 
     return n_safe
 
-print(f" P1: {get_first_solution()}")
-print(f" P2: {get_second_solution()}")
+
+print(f" P1: {get_first_solution(test=args.test)}")
+print(f" P2: {get_second_solution(test=args.test)}")

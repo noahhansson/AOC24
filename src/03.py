@@ -33,5 +33,5 @@ def get_second_solution(test: bool = args.test):
                 do = False
     return score
 
-print(f" P1: {get_first_solution()}")
-print(f" P2: {get_second_solution()}")
+print(f" P1: {get_first_solution(test=args.test)}")
+print(f" P2: {get_second_solution(test=args.test)}")

@@ -44,12 +44,13 @@ def timer(func: Callable):
         return result
     return wrapper
 
-def setup_parser():
+def setup_parser() -> argparse.ArgumentParser:
     """Setup argument parser. Used to allow for easily running on test input
     """
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
+        "-t",
         "--test",
         action="store_true",
         help="If set, run on test input"
