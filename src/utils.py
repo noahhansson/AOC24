@@ -22,7 +22,7 @@ def read_input(file_name: str, test: bool = False) -> list[str]:
 
     return contents
 
-def timer_decorator(func: Callable):
+def timer(func: Callable):
     """Decorator for printing time taken for a function call
     """    
     def wrapper(*args, **kwargs):

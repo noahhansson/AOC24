@@ -1,4 +1,4 @@
-from utils import read_input, timer_decorator, setup_parser
+from utils import read_input, timer, setup_parser
 
 parser = setup_parser()
 args = parser.parse_args()
@@ -33,7 +33,7 @@ def parse_errors(row: list[int], p2: bool=False) -> bool:
 
     return True
 
-@timer_decorator
+@timer
 def get_first_solution(test: bool = test_run):
     inpt = read_input("02", test=test)
     n_safe = 0
@@ -45,7 +45,7 @@ def get_first_solution(test: bool = test_run):
 
     return n_safe
 
-@timer_decorator
+@timer
 def get_second_solution(test: bool = test_run):
     inpt = read_input("02", test=test)
     n_safe = 0
