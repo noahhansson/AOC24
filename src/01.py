@@ -2,7 +2,7 @@ from utils import read_input, timer, setup_parser
 from collections import defaultdict
 
 parser = setup_parser()
-args = parser.parse_args()
+args, _= parser.parse_known_args()
 
 
 @timer

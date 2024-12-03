@@ -2,7 +2,7 @@ from utils import read_input, timer, setup_parser
 import re
 
 parser = setup_parser()
-args = parser.parse_args()
+args, _= parser.parse_known_args()
 
 @timer
 def get_first_solution(test: bool = args.test):
