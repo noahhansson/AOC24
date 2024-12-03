@@ -1,7 +1,6 @@
-from utils import read_input, timer, setup_parser
+from utils import read_input, timer, setup_args
 
-parser = setup_parser()
-args, _= parser.parse_known_args()
+args = setup_args()
 
 
 @timer

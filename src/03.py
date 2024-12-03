@@ -1,8 +1,7 @@
-from utils import read_input, timer, setup_parser
+from utils import read_input, timer, setup_args
 import re
 
-parser = setup_parser()
-args, _= parser.parse_known_args()
+args = setup_args()
 
 @timer
 def get_first_solution(test: bool = args.test):

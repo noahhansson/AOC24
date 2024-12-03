@@ -44,7 +44,7 @@ def timer(func: Callable):
         return result
     return wrapper
 
-def setup_parser() -> argparse.ArgumentParser:
+def setup_args() -> argparse.Namespace:
     """Setup argument parser. Used to allow for easily running on test input
     """
     parser = argparse.ArgumentParser()
@@ -56,4 +56,6 @@ def setup_parser() -> argparse.ArgumentParser:
         help="If set, run on test input"
     )
     
-    return parser
+    args, _ = parser.parse_known_args()
+
+    return args
