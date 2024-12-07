@@ -5,9 +5,9 @@ args = setup_args()
 type Point = tuple[int, int]
 type Direction = tuple[int, int]
 
-def parse_input(test:bool = False) -> tuple[set[Point], Point, int, int]:
 
-    inpt = read_input('06', test=test)
+def parse_input(test: bool = False) -> tuple[set[Point], Point, int, int]:
+    inpt = read_input("06", test=test)
 
     obstacles: set[Point] = set()
     start_pos: Point
@@ -23,6 +23,7 @@ def parse_input(test:bool = False) -> tuple[set[Point], Point, int, int]:
     ymax = len(inpt)
 
     return obstacles, start_pos, xmax, ymax
+
 
 def rotate_90(d: Direction) -> Direction:
     return (-d[1], d[0])
@@ -51,7 +52,6 @@ def simulate_path(
 def will_loop(
     pos: Point, direction: Direction, obstacles: set[Point], xlim: tuple[int, int], ylim: tuple[int, int]
 ) -> bool:
-
     seen: set[tuple[Point, Direction]] = set()
 
     while is_in_bounds(p=pos, xlim=xlim, ylim=ylim):

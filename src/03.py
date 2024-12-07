@@ -3,6 +3,7 @@ import re
 
 args = setup_args()
 
+
 @timer
 def get_first_solution(test: bool = args.test):
     inpt = read_input("03", test=test)
@@ -14,6 +15,7 @@ def get_first_solution(test: bool = args.test):
             score += digits[0] * digits[1]
 
     return score
+
 
 @timer
 def get_second_solution(test: bool = args.test):
@@ -31,6 +33,7 @@ def get_second_solution(test: bool = args.test):
             if instruction == "don't()":
                 do = False
     return score
+
 
 print(f" P1: {get_first_solution(test=args.test)}")
 print(f" P2: {get_second_solution(test=args.test)}")

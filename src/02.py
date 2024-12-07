@@ -5,7 +5,6 @@ test_run = args.test
 
 
 def parse_errors(row: list[int], p2: bool = False) -> bool:
-
     prev_increment = 0
 
     for i, (x, x_lag) in enumerate(zip(row[1:], row)):

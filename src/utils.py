@@ -3,6 +3,7 @@ import time
 from typing import Callable
 import argparse
 
+
 def read_input(file_name: str, test: bool = False) -> list[str]:
     """Function for navigating to data folder and reading input.
 
@@ -17,20 +18,21 @@ def read_input(file_name: str, test: bool = False) -> list[str]:
         file_name = f"{file_name}-test"
 
     input_file = os.path.join(os.getcwd(), "..", "input", f"{file_name}.txt")
-    with open(input_file, 'r') as file:
+    with open(input_file, "r") as file:
         contents = [val.strip() for val in file.readlines()]
 
     return contents
 
+
 def timer(func: Callable):
-    """Decorator for printing time taken for a function call
-    """    
+    """Decorator for printing time taken for a function call"""
+
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
         execution_time = end_time - start_time
-        
+
         if execution_time < 1e-6:
             time_taken = f"{execution_time * 1e9:.2f} ns"
         elif execution_time < 1e-3:
@@ -39,23 +41,19 @@ def timer(func: Callable):
             time_taken = f"{execution_time * 1e3:.2f} ms"
         else:
             time_taken = f"{execution_time:.4f} s"
-        
+
         print(f"Execution time of {func.__name__}: {time_taken}")
         return result
+
     return wrapper
 
+
 def setup_args() -> argparse.Namespace:
-    """Setup argument parser. Used to allow for easily running on test input
-    """
+    """Setup argument parser. Used to allow for easily running on test input"""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "-t",
-        "--test",
-        action="store_true",
-        help="If set, run on test input"
-    )
-    
+    parser.add_argument("-t", "--test", action="store_true", help="If set, run on test input")
+
     args, _ = parser.parse_known_args()
 
     return args

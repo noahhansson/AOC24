@@ -15,5 +15,5 @@ def get_second_solution(test: bool = False):
     return inpt
 
 
-# print(f" P1: {get_first_solution(test=args.test)}")
-# print(f" P2: {get_second_solution(test=args.test)}")
+# print(f"P1: {get_first_solution(test=args.test)}")
+# print(f"P2: {get_second_solution(test=args.test)}")

@@ -6,6 +6,7 @@ args = setup_args()
 type Update = list[int]
 type Rules = dict[int, set[int]]
 
+
 def parse_input(test: bool) -> tuple[Rules, list[Update]]:
     rules: Rules = defaultdict(set)
     updates: list[Update] = []

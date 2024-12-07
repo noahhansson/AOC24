@@ -2,7 +2,6 @@
 input/*.txt
 !input/*-test.txt
 __pycache__
-.vscode
 
 # Jupyter Notebook
 .ipynb_checkpoints

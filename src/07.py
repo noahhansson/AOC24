@@ -1,9 +1,9 @@
 from utils import read_input, timer, setup_args
-from copy import copy
 
 args = setup_args()
 
-def parse_input(test:bool) -> tuple[list[int], list[list[int]]]:
+
+def parse_input(test: bool) -> tuple[list[int], list[list[int]]]:
     inpt = read_input("07", test=test)
 
     targets: list[int] = []
@@ -18,17 +18,22 @@ def parse_input(test:bool) -> tuple[list[int], list[list[int]]]:
 
     return targets, terms
 
+
 def try_solve(target: int, current_val: int, terms: list[int], p2: bool = False) -> bool:
     if (current_val == target) and (len(terms) == 0):
         return True
     elif (current_val > target) or (len(terms) == 0):
         return False
     else:
-        return (
-            try_solve(target, current_val + terms[0], terms[1:], p2)
-            or try_solve(target, current_val * terms[0], terms[1:], p2)
-            or (p2 and try_solve(target, int(f"{current_val}{terms[0]}"), terms[1:], p2))
-        )
+        if current_val == 0:
+            return try_solve(target, current_val + terms[0], terms[1:], p2)
+        else:
+            return (
+                try_solve(target, current_val + terms[0], terms[1:], p2)
+                or try_solve(target, current_val * terms[0], terms[1:], p2)
+                or (p2 and try_solve(target, int(f"{current_val}{terms[0]}"), terms[1:], p2))
+            )
+
 
 @timer
 def get_first_solution(test: bool = False):
@@ -54,5 +59,5 @@ def get_second_solution(test: bool = False):
     return score
 
 
-print(f" P1: {get_first_solution(test=args.test)}")
-print(f" P2: {get_second_solution(test=args.test)}")
+print(f"P1: {get_first_solution(test=args.test)}")
+print(f"P2: {get_second_solution(test=args.test)}")
