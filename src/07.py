@@ -25,14 +25,11 @@ def try_solve(target: int, current_val: int, terms: list[int], p2: bool = False)
     elif (current_val > target) or (len(terms) == 0):
         return False
     else:
-        if current_val == 0:
-            return try_solve(target, current_val + terms[0], terms[1:], p2)
-        else:
-            return (
-                try_solve(target, current_val + terms[0], terms[1:], p2)
-                or try_solve(target, current_val * terms[0], terms[1:], p2)
-                or (p2 and try_solve(target, int(f"{current_val}{terms[0]}"), terms[1:], p2))
-            )
+        return (
+            try_solve(target, current_val + terms[0], terms[1:], p2)
+            or try_solve(target, current_val * terms[0], terms[1:], p2)
+            or (p2 and try_solve(target, int(f"{current_val}{terms[0]}"), terms[1:], p2))
+        )
 
 
 @timer
@@ -41,7 +38,7 @@ def get_first_solution(test: bool = False):
 
     score = 0
     for target, term_lst in zip(targets, terms):
-        if try_solve(target, 0, term_lst):
+        if try_solve(target, term_lst[0], term_lst[1:]):
             score += target
 
     return score
@@ -53,7 +50,7 @@ def get_second_solution(test: bool = False):
 
     score = 0
     for target, term_lst in zip(targets, terms):
-        if try_solve(target, 0, term_lst, p2=True):
+        if try_solve(target, term_lst[0], term_lst[1:], p2=True):
             score += target
 
     return score
