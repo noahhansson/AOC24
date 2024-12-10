@@ -1,4 +1,5 @@
 from utils import read_input, timer, setup_args
+from typing import Iterable
 
 type PointType = tuple[int, int]
 type MapType = dict[PointType, int]
@@ -18,30 +19,21 @@ def parse_input(test: bool = False) -> MapType:
     return map
 
 
-def get_neighbours(position: PointType) -> list[PointType]:
-    neighbours = []
+def get_neighbours(position: PointType) -> Iterable[PointType]:
     for dy, dx in ((0, -1), (1, 0), (0, 1), (-1, 0)):
-        neighbours.append((position[0] + dx, position[1] + dy))
-    return neighbours
+        yield (position[0] + dx, position[1] + dy)
 
 
 def find_trail(position: PointType, map: MapType) -> list[PointType]:
-    next_positions = []
+    trailheads: list[PointType] = []
 
     current_height = map[position]
     if current_height == 9:
-        return [position]
-
-    for neighbour in get_neighbours(position):
-        if neighbour in map.keys():
-            neighbour_height = map[neighbour]
-
-            if neighbour_height == current_height + 1:
-                next_positions.append(neighbour)
-
-    trailheads: list[PointType] = []
-    for next_position in next_positions:
-        trailheads = trailheads + find_trail(next_position, map)
+        trailheads.append(position)
+    else:
+        for neighbour in get_neighbours(position):
+            if (neighbour in map.keys()) and (map[neighbour] == current_height + 1):
+                trailheads += find_trail(neighbour, map)
 
     return trailheads
 
