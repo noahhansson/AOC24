@@ -93,11 +93,20 @@ def push(box_pos: Point, direction: tuple[int, int], boxes: set[Point], walls: s
     return False
 
 
+def find_boxes(p: Point) -> tuple[BoxP2, BoxP2]:
+    return (BoxP2((p.x - 1, p.x), p.y), BoxP2((p.x, p.x + 1), p.y))
+
+
 def can_push_p2(box: BoxP2, direction: tuple[int, int], boxes: set[BoxP2], walls: set[Point]) -> bool:
     moved_box = box.move(direction)
     if (Point(moved_box.x[0], moved_box.y) in walls) or (Point(moved_box.x[1], moved_box.y) in walls):
         return False
-    collisions = [b for b in boxes if moved_box.overlaps(b) and b != box]
+    boxes_in_way = [
+        box
+        for box in [*find_boxes(Point(moved_box.x[0], moved_box.y)), *find_boxes(Point(moved_box.x[1], moved_box.y))]
+        if box in boxes
+    ]
+    collisions = [b for b in boxes_in_way if moved_box.overlaps(b) and b != box]
     if collisions:
         return all([can_push_p2(b, direction, boxes, walls) for b in collisions])
     return True
@@ -105,6 +114,7 @@ def can_push_p2(box: BoxP2, direction: tuple[int, int], boxes: set[BoxP2], walls
 
 def push_p2(box: BoxP2, direction: tuple[int, int], boxes: set[BoxP2]) -> None:
     moved_box = box.move(direction)
+
     collisions = [b for b in boxes if moved_box.overlaps(b) and b != box]
     for b in collisions:
         push_p2(b, direction, boxes)
@@ -146,13 +156,14 @@ def get_second_solution(test: bool = False):
         move = instruction_map[instruction]
         next_pos = robot_pos + move
         blocked = False
-        for box in boxes:
-            if (next_pos == Point(box.x[0], box.y)) or (next_pos == Point(box.x[1], box.y)):
-                if can_push_p2(box, move, boxes, walls):
-                    push_p2(box, move, boxes)
-                else:
-                    blocked = True
-                break
+        for box in find_boxes(next_pos):
+            if box in boxes:
+                if (next_pos == Point(box.x[0], box.y)) or (next_pos == Point(box.x[1], box.y)):
+                    if can_push_p2(box, move, boxes, walls):
+                        push_p2(box, move, boxes)
+                    else:
+                        blocked = True
+                    break
 
         if next_pos in walls:
             blocked = True
