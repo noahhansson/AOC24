@@ -1,18 +1,8 @@
 from utils import read_input, timer, setup_args
-from typing import Self
+from classes import Point
 from collections.abc import Iterator
-from dataclasses import dataclass
 
 args = setup_args()
-
-
-@dataclass(frozen=True)
-class Point:
-    x: int
-    y: int
-
-    def __add__(self, other: tuple[int, int]) -> Self:
-        return self.__class__(self.x + other[0], self.y + other[1])
 
 
 def parse_input(test: bool = False) -> dict[Point, str]:
