@@ -1,6 +1,7 @@
 import os
 import time
 from typing import Callable
+from collections.abc import Iterator
 import argparse
 
 
@@ -22,6 +23,12 @@ def read_input(file_name: str, test: bool = False) -> list[str]:
         contents = [val.strip() for val in file.readlines()]
 
     return contents
+
+
+def iter_input(inpt: list[str]) -> Iterator[tuple[int, int, str]]:
+    for y, row in enumerate(inpt):
+        for x, c in enumerate(row):
+            yield x, y, c
 
 
 def timer(func: Callable):
