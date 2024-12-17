@@ -1,4 +1,5 @@
 from utils import read_input, timer, setup_args
+from collections.abc import Iterator
 import re
 
 args = setup_args()
@@ -14,7 +15,7 @@ class Computer:
     registry_a: int
     registry_b: int
     registry_c: int
-    output: list[int]
+    output: int | None
     pointer: int
 
     def __init__(self, a: int, b: int, c: int) -> None:
@@ -22,7 +23,7 @@ class Computer:
         self.registry_b = b
         self.registry_c = c
 
-        self.output = []
+        self.output = None
         self.pointer = 0
 
     def get_value(self, combo: int) -> int:
@@ -31,7 +32,7 @@ class Computer:
 
     def adv(self, combo: int) -> None:
         value = self.get_value(combo)
-        self.registry_a = self.registry_a // (2**value)
+        self.registry_a = self.registry_a >> value
         self.pointer += 2
 
     def bxl(self, combo: int) -> None:
@@ -40,7 +41,7 @@ class Computer:
 
     def bst(self, combo: int) -> None:
         value = self.get_value(combo)
-        self.registry_b = value % 8
+        self.registry_b = value & 7
         self.pointer += 2
 
     def jnz(self, combo: int) -> None:
@@ -55,25 +56,21 @@ class Computer:
 
     def out(self, combo: int) -> None:
         value = self.get_value(combo)
-        self.output.append(value % 8)
+        self.output = value & 7
         self.pointer += 2
 
     def bdv(self, combo: int) -> None:
         value = self.get_value(combo)
-        self.registry_b = self.registry_a // (2**value)
+        self.registry_b = self.registry_a >> value
         self.pointer += 2
 
     def cdv(self, combo: int) -> None:
         value = self.get_value(combo)
-        self.registry_c = self.registry_a // (2**value)
+        self.registry_c = self.registry_a >> value
         self.pointer += 2
 
-    def run_program(self, program: list[int]) -> str:
-        self.output = []
-
+    def run_program(self, program: list[int]) -> Iterator[int]:
         while self.pointer < len(program) - 1:
-            if self.pointer == 0:
-                print(f"New cycle - A = {self.registry_a} ({self.registry_a :03b})")
             opcode = program[self.pointer]
             combo = program[self.pointer + 1]
 
@@ -89,33 +86,29 @@ class Computer:
             }
 
             opcode_map[opcode](combo)
-
-        ret_str = ",".join(map(str, self.output))
-        self.output = []
-        return ret_str
-
-    def clear_output(self) -> None:
-        self.output = []
+            if self.output is not None:
+                yield self.output
+                self.output = None
 
 
 def run_test_cases() -> None:
     comp = Computer(0, 0, 9)
-    comp.run_program([2, 6])
+    _ = list(comp.run_program([2, 6]))
     assert comp.registry_b == 1
 
     comp = Computer(10, 0, 0)
-    assert comp.run_program([5, 0, 5, 1, 5, 4]) == "0,1,2"
+    assert ",".join(map(str, comp.run_program([5, 0, 5, 1, 5, 4]))) == "0,1,2"
 
     comp = Computer(2024, 0, 0)
-    assert comp.run_program([0, 1, 5, 4, 3, 0]) == "4,2,5,6,7,7,7,7,3,1,0"
+    assert ",".join(map(str, comp.run_program([0, 1, 5, 4, 3, 0]))) == "4,2,5,6,7,7,7,7,3,1,0"
     assert comp.registry_a == 0
 
     comp = Computer(0, 29, 0)
-    comp.run_program([1, 7])
+    _ = list(comp.run_program([1, 7]))
     assert comp.registry_b == 26
 
     comp = Computer(0, 2024, 43690)
-    comp.run_program([4, 0])
+    _ = list(comp.run_program([4, 0]))
     assert comp.registry_b == 44354
 
 
@@ -124,22 +117,19 @@ def get_first_solution(test: bool = False) -> str:
     a, b, c, program = parse_input(test)
 
     comp = Computer(a, b, c)
-    return comp.run_program(program)
+    return ",".join(map(str, comp.run_program(program)))
 
 
-def next_digit(x):
-    # Hard coded for my input - not sure how to extract formula
-    return (((x & 7) ^ 7) ^ (x // 2 ** ((x & 7) ^ 7)) ^ 4) & 7
-
-
-def find_register(program: list[int], current_register: str) -> str:
-    if len(program) == 0:
+def find_register(program: list[int], index: int, current_register: str) -> str:
+    if index < 0:
         return current_register
     for x in range(0, 8):
         try_register = int(f"{current_register}{x:03b}", 2)
-        if next_digit(try_register) == program[-1]:
-            if (res := find_register(program[:-1], f"{try_register :03b}")) != "":
-                return res
+        comp = Computer(try_register, 0, 0)
+        res = next(comp.run_program(program))
+        if res == program[index]:
+            if (reg := find_register(program, index - 1, f"{try_register :03b}")) != "":
+                return reg
     return ""
 
 
@@ -147,11 +137,11 @@ def find_register(program: list[int], current_register: str) -> str:
 def get_second_solution(test: bool = False) -> int:
     _, b, c, program = parse_input(test)
 
-    res = find_register(program, "")
+    res = find_register(program, len(program) - 1, "")
 
     a = int(res, 2)
     comp = Computer(a, b, c)
-    assert comp.run_program(program) == ",".join(map(str, program))
+    assert list(comp.run_program(program)) == program
 
     return a
 
