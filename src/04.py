@@ -70,11 +70,35 @@ def get_second_solution(test: bool = False):
     for x in range(1, len(inpt[0]) - 1):
         for y in range(1, len(inpt) - 1):
             if (
-                all([inpt[y - 1][x - 1] == "M", inpt[y][x] == "A", inpt[y + 1][x + 1] == "S"])
-                or all([inpt[y - 1][x - 1] == "S", inpt[y][x] == "A", inpt[y + 1][x + 1] == "M"])
+                all(
+                    [
+                        inpt[y - 1][x - 1] == "M",
+                        inpt[y][x] == "A",
+                        inpt[y + 1][x + 1] == "S",
+                    ]
+                )
+                or all(
+                    [
+                        inpt[y - 1][x - 1] == "S",
+                        inpt[y][x] == "A",
+                        inpt[y + 1][x + 1] == "M",
+                    ]
+                )
             ) and (
-                all([inpt[y + 1][x - 1] == "M", inpt[y][x] == "A", inpt[y - 1][x + 1] == "S"])
-                or all([inpt[y + 1][x - 1] == "S", inpt[y][x] == "A", inpt[y - 1][x + 1] == "M"])
+                all(
+                    [
+                        inpt[y + 1][x - 1] == "M",
+                        inpt[y][x] == "A",
+                        inpt[y - 1][x + 1] == "S",
+                    ]
+                )
+                or all(
+                    [
+                        inpt[y + 1][x - 1] == "S",
+                        inpt[y][x] == "A",
+                        inpt[y - 1][x + 1] == "M",
+                    ]
+                )
             ):
                 score += 1
 

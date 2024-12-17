@@ -38,7 +38,12 @@ def print_state(robots: list[Robot], xmax: int, ymax: int) -> str:
 
     return "\n".join(
         [
-            "".join([str(positions[(x, y)]) if (x, y) in positions else " " for x in range(0, xmax)])
+            "".join(
+                [
+                    str(positions[(x, y)]) if (x, y) in positions else " "
+                    for x in range(0, xmax)
+                ]
+            )
             for y in range(0, ymax)
         ]
     )
@@ -81,7 +86,10 @@ def calc_entropy(robots: list[Robot]) -> int:
     score = 0
     for position in positions:
         for direction in ((1, 0), (0, 1), (-1, 0), (0, -1)):
-            if (position[0] + direction[0], position[1] + direction[1]) in positions:
+            if (
+                position[0] + direction[0],
+                position[1] + direction[1],
+            ) in positions:
                 score += 1
 
     return score

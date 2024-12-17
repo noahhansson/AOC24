@@ -59,7 +59,9 @@ def setup_args() -> argparse.Namespace:
     """Setup argument parser. Used to allow for easily running on test input"""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-t", "--test", action="store_true", help="If set, run on test input")
+    parser.add_argument(
+        "-t", "--test", action="store_true", help="If set, run on test input"
+    )
 
     args, _ = parser.parse_known_args()
 

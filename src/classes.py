@@ -12,7 +12,11 @@ class Point:
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, tuple):
-            return (self.x == other[0]) and (self.y == other[1]) and (len(other) == 2)
+            return (
+                (self.x == other[0])
+                and (self.y == other[1])
+                and (len(other) == 2)
+            )
         elif isinstance(other, self.__class__):
             return (self.x == other.x) and (self.y == other.y)
         else:

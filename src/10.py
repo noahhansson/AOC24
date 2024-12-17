@@ -32,7 +32,9 @@ def find_trail(position: PointType, map: MapType) -> list[PointType]:
         trailheads.append(position)
     else:
         for neighbour in get_neighbours(position):
-            if (neighbour in map.keys()) and (map[neighbour] == current_height + 1):
+            if (neighbour in map.keys()) and (
+                map[neighbour] == current_height + 1
+            ):
                 trailheads += find_trail(neighbour, map)
 
     return trailheads

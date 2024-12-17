@@ -21,10 +21,16 @@ def get_neighbours(p: Point) -> Iterator[Point]:
         yield p + dir
 
 
-def flood_fill(p: Point, plant: str, plots: dict[Point, str], seen: set[Point] = set()) -> set[Point]:
+def flood_fill(
+    p: Point, plant: str, plots: dict[Point, str], seen: set[Point] = set()
+) -> set[Point]:
     seen.add(p)
     for neighbour in get_neighbours(p):
-        if (neighbour in plots.keys()) and (plots[neighbour] == plant) and (neighbour not in seen):
+        if (
+            (neighbour in plots.keys())
+            and (plots[neighbour] == plant)
+            and (neighbour not in seen)
+        ):
             seen = seen | flood_fill(neighbour, plant, plots, seen)
 
     return seen
@@ -55,7 +61,9 @@ def get_first_solution(test: bool = False):
         size = len(region)
         perimeter = 0
         for plot in region:
-            perimeter += len([p for p in get_neighbours(plot) if p not in region])
+            perimeter += len(
+                [p for p in get_neighbours(plot) if p not in region]
+            )
 
         score += size * perimeter
 
@@ -133,7 +141,9 @@ def get_second_solution(test: bool = False):
         while interior_points:
             xmin = min(p.x for p in interior_points)
             ymin = min(p.y for p in interior_points if p.x == xmin)
-            sides_interior, boundary_interior = find_sides(region, Point(xmin, ymin))
+            sides_interior, boundary_interior = find_sides(
+                region, Point(xmin, ymin)
+            )
             sides += sides_interior
             boundary |= boundary_interior
 

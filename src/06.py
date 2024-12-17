@@ -29,12 +29,18 @@ def rotate_90(d: Direction) -> Direction:
     return (-d[1], d[0])
 
 
-def is_in_bounds(p: Point, xlim: tuple[int, int], ylim: tuple[int, int]) -> bool:
+def is_in_bounds(
+    p: Point, xlim: tuple[int, int], ylim: tuple[int, int]
+) -> bool:
     return all([xlim[0] <= p[0] < xlim[1], ylim[0] <= p[1] < ylim[1]])
 
 
 def simulate_path(
-    pos: Point, direction: Direction, obstacles: set[Point], xlim: tuple[int, int], ylim: tuple[int, int]
+    pos: Point,
+    direction: Direction,
+    obstacles: set[Point],
+    xlim: tuple[int, int],
+    ylim: tuple[int, int],
 ) -> set[Point]:
     seen: set[Point] = set()
 
@@ -50,7 +56,11 @@ def simulate_path(
 
 
 def will_loop(
-    pos: Point, direction: Direction, obstacles: set[Point], xlim: tuple[int, int], ylim: tuple[int, int]
+    pos: Point,
+    direction: Direction,
+    obstacles: set[Point],
+    xlim: tuple[int, int],
+    ylim: tuple[int, int],
 ) -> bool:
     seen: set[tuple[Point, Direction]] = set()
 
@@ -71,7 +81,9 @@ def will_loop(
 @timer
 def get_first_solution(test: bool = False):
     obstacles, start_pos, xmax, ymax = parse_input(test=test)
-    return len(simulate_path(start_pos, (0, -1), obstacles, (0, xmax), (0, ymax)))
+    return len(
+        simulate_path(start_pos, (0, -1), obstacles, (0, xmax), (0, ymax))
+    )
 
 
 @timer
@@ -79,7 +91,9 @@ def get_second_solution(test: bool = False):
     obstacles, start_pos, xmax, ymax = parse_input(test=test)
     score = 0
     for p in simulate_path(start_pos, (0, -1), obstacles, (0, xmax), (0, ymax)):
-        if p != start_pos and will_loop(start_pos, (0, -1), obstacles | {p}, (0, xmax), (0, ymax)):
+        if p != start_pos and will_loop(
+            start_pos, (0, -1), obstacles | {p}, (0, xmax), (0, ymax)
+        ):
             score += 1
     return score
 

@@ -37,8 +37,12 @@ def det(a: int, b: int, c: int, d: int) -> int:
     return a * d - b * c
 
 
-def solve(a: int, b: int, c: int, d: int, x: int, y: int) -> tuple[float, float]:
-    return 1 / det(a, b, c, d) * (d * x - b * y), 1 / det(a, b, c, d) * (-c * x + a * y)
+def solve(
+    a: int, b: int, c: int, d: int, x: int, y: int
+) -> tuple[float, float]:
+    return 1 / det(a, b, c, d) * (d * x - b * y), 1 / det(a, b, c, d) * (
+        -c * x + a * y
+    )
 
 
 def get_solution(equation: dict[str, int]) -> tuple[int, int] | None:
@@ -46,8 +50,12 @@ def get_solution(equation: dict[str, int]) -> tuple[int, int] | None:
     solution_rounded = (round(solution[0]), round(solution[1]))
     if all(
         [
-            solution_rounded[0] * equation["a"] + solution_rounded[1] * equation["b"] == equation["x"],
-            solution_rounded[0] * equation["c"] + solution_rounded[1] * equation["d"] == equation["y"],
+            solution_rounded[0] * equation["a"]
+            + solution_rounded[1] * equation["b"]
+            == equation["x"],
+            solution_rounded[0] * equation["c"]
+            + solution_rounded[1] * equation["d"]
+            == equation["y"],
         ]
     ):
         return solution_rounded

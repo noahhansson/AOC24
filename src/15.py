@@ -19,11 +19,15 @@ class BoxP2:
 
     def overlaps(self, other: Self) -> bool:
         return (self.y == other.y) and (
-            (self.x[0] == other.x[0]) or (self.x[0] == other.x[1]) or (self.x[1] == other.x[0])
+            (self.x[0] == other.x[0])
+            or (self.x[0] == other.x[1])
+            or (self.x[1] == other.x[0])
         )
 
 
-def parse_input(test: bool = False) -> tuple[set[Point], set[Point], Point, list[str]]:
+def parse_input(
+    test: bool = False,
+) -> tuple[set[Point], set[Point], Point, list[str]]:
     inpt = read_input("15", test=test)
 
     walls: set[Point] = set()
@@ -48,7 +52,9 @@ def parse_input(test: bool = False) -> tuple[set[Point], set[Point], Point, list
     return walls, boxes, robot_pos, instructions
 
 
-def parse_input_p2(test: bool = False) -> tuple[set[Point], set[BoxP2], Point, list[str]]:
+def parse_input_p2(
+    test: bool = False,
+) -> tuple[set[Point], set[BoxP2], Point, list[str]]:
     inpt = read_input("15", test=test)
 
     walls: set[Point] = set()
@@ -74,7 +80,12 @@ def parse_input_p2(test: bool = False) -> tuple[set[Point], set[BoxP2], Point, l
     return walls, boxes, robot_pos, instructions
 
 
-def push(box_pos: Point, direction: tuple[int, int], boxes: set[Point], walls: set[Point]) -> bool:
+def push(
+    box_pos: Point,
+    direction: tuple[int, int],
+    boxes: set[Point],
+    walls: set[Point],
+) -> bool:
     next_box_pos = box_pos + direction
     if next_box_pos in walls:
         return False
@@ -97,18 +108,27 @@ def find_boxes(p: Point) -> tuple[BoxP2, BoxP2]:
     return (BoxP2((p.x - 1, p.x), p.y), BoxP2((p.x, p.x + 1), p.y))
 
 
-def can_push_p2(box: BoxP2, direction: tuple[int, int], boxes: set[BoxP2], walls: set[Point]) -> bool:
+def can_push_p2(
+    box: BoxP2, direction: tuple[int, int], boxes: set[BoxP2], walls: set[Point]
+) -> bool:
     moved_box = box.move(direction)
-    if (Point(moved_box.x[0], moved_box.y) in walls) or (Point(moved_box.x[1], moved_box.y) in walls):
+    if (Point(moved_box.x[0], moved_box.y) in walls) or (
+        Point(moved_box.x[1], moved_box.y) in walls
+    ):
         return False
     boxes_in_way = [
         box
-        for box in [*find_boxes(Point(moved_box.x[0], moved_box.y)), *find_boxes(Point(moved_box.x[1], moved_box.y))]
+        for box in [
+            *find_boxes(Point(moved_box.x[0], moved_box.y)),
+            *find_boxes(Point(moved_box.x[1], moved_box.y)),
+        ]
         if box in boxes
     ]
     collisions = [b for b in boxes_in_way if moved_box.overlaps(b) and b != box]
     if collisions:
-        return all([can_push_p2(b, direction, boxes, walls) for b in collisions])
+        return all(
+            [can_push_p2(b, direction, boxes, walls) for b in collisions]
+        )
     return True
 
 
@@ -158,7 +178,9 @@ def get_second_solution(test: bool = False):
         blocked = False
         for box in find_boxes(next_pos):
             if box in boxes:
-                if (next_pos == Point(box.x[0], box.y)) or (next_pos == Point(box.x[1], box.y)):
+                if (next_pos == Point(box.x[0], box.y)) or (
+                    next_pos == Point(box.x[1], box.y)
+                ):
                     if can_push_p2(box, move, boxes, walls):
                         push_p2(box, move, boxes)
                     else:

@@ -27,7 +27,15 @@ class Computer:
         self.pointer = 0
 
     def get_value(self, combo: int) -> int:
-        combo_map = {0: 0, 1: 1, 2: 2, 3: 3, 4: self.registry_a, 5: self.registry_b, 6: self.registry_c}
+        combo_map = {
+            0: 0,
+            1: 1,
+            2: 2,
+            3: 3,
+            4: self.registry_a,
+            5: self.registry_b,
+            6: self.registry_c,
+        }
         return combo_map[combo]
 
     def adv(self, combo: int) -> None:
@@ -100,7 +108,10 @@ def run_test_cases() -> None:
     assert ",".join(map(str, comp.run_program([5, 0, 5, 1, 5, 4]))) == "0,1,2"
 
     comp = Computer(2024, 0, 0)
-    assert ",".join(map(str, comp.run_program([0, 1, 5, 4, 3, 0]))) == "4,2,5,6,7,7,7,7,3,1,0"
+    assert (
+        ",".join(map(str, comp.run_program([0, 1, 5, 4, 3, 0])))
+        == "4,2,5,6,7,7,7,7,3,1,0"
+    )
     assert comp.registry_a == 0
 
     comp = Computer(0, 29, 0)
@@ -128,7 +139,9 @@ def find_register(program: list[int], index: int, current_register: str) -> str:
         comp = Computer(try_register, 0, 0)
         res = next(comp.run_program(program))
         if res == program[index]:
-            if (reg := find_register(program, index - 1, f"{try_register :03b}")) != "":
+            if (
+                reg := find_register(program, index - 1, f"{try_register :03b}")
+            ) != "":
                 return reg
     return ""
 

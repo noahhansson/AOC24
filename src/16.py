@@ -49,7 +49,9 @@ def get_neighbours(
         yield (steps, current_position, direction)
 
 
-def find_shortest(walls: set[Point], start: Point, end: Point) -> tuple[int, set[Point]]:
+def find_shortest(
+    walls: set[Point], start: Point, end: Point
+) -> tuple[int, set[Point]]:
     start_node: tuple[int, Point, tuple[int, int]] = (0, start, (1, 0))
 
     queue = [start_node]
@@ -73,19 +75,26 @@ def find_shortest(walls: set[Point], start: Point, end: Point) -> tuple[int, set
                 min_score = score
             else:
                 break
-        for cost, next_pos, next_dir in get_neighbours(position, direction, walls):
+        for cost, next_pos, next_dir in get_neighbours(
+            position, direction, walls
+        ):
             # Strict constraing for being a faster route
-            if ((next_pos, next_dir) not in seen or (seen[(next_pos, next_dir)] > (score + cost))) and (
-                (min_score < 0) or score + cost <= min_score
-            ):
+            if (
+                (next_pos, next_dir) not in seen
+                or (seen[(next_pos, next_dir)] > (score + cost))
+            ) and ((min_score < 0) or score + cost <= min_score):
                 seen[(next_pos, next_dir)] = score + cost
                 heapq.heappush(queue, (score + cost, next_pos, next_dir))
 
             # Relaxed constraint for being an equally fast route
-            if (((next_pos, next_dir) in seen) and seen[(next_pos, next_dir)] >= (score + cost)) and (
-                (min_score < 0) or (score + cost <= min_score)
-            ):
-                next_path = [position + (direction[0] * i, direction[1] * i) for i in range(0, (cost % 1000) + 1)]
+            if (
+                ((next_pos, next_dir) in seen)
+                and seen[(next_pos, next_dir)] >= (score + cost)
+            ) and ((min_score < 0) or (score + cost <= min_score)):
+                next_path = [
+                    position + (direction[0] * i, direction[1] * i)
+                    for i in range(0, (cost % 1000) + 1)
+                ]
 
                 path_to[next_pos] |= path_to[position] | set(next_path)
 

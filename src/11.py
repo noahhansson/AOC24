@@ -20,7 +20,10 @@ def blink(stone: int) -> list[int]:
     if stone == 0:
         return [1]
     elif (stone_len := len(str(stone))) % 2 == 0:
-        return [int(str(stone)[: stone_len // 2]), int(str(stone)[stone_len // 2 :])]
+        return [
+            int(str(stone)[: stone_len // 2]),
+            int(str(stone)[stone_len // 2 :]),
+        ]
     else:
         return [stone * 2024]
 

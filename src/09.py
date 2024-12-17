@@ -67,7 +67,9 @@ def get_second_solution(test: bool = False):
         block_size = len(blocks[block_id])
 
         space_idx = 0
-        while space_idx < len(spaces) and (max(spaces[space_idx]) < max(blocks[block_id])):
+        while space_idx < len(spaces) and (
+            max(spaces[space_idx]) < max(blocks[block_id])
+        ):
             if len(spaces[space_idx]) >= block_size:
                 space = spaces[space_idx]
                 if len(space) == block_size:

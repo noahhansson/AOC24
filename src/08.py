@@ -46,12 +46,18 @@ def solve(p2: bool = False, test: bool = False) -> int:
                 next_node = a1
                 while (0 <= next_node[0] < xmax) and (0 <= next_node[1] < ymax):
                     nodes.add(next_node)
-                    next_node = (next_node[0] + distance_x, next_node[1] + distance_y)
+                    next_node = (
+                        next_node[0] + distance_x,
+                        next_node[1] + distance_y,
+                    )
 
                 next_node = a2
                 while (0 <= next_node[0] < xmax) and (0 <= next_node[1] < ymax):
                     nodes.add(next_node)
-                    next_node = (next_node[0] - distance_x, next_node[1] - distance_y)
+                    next_node = (
+                        next_node[0] - distance_x,
+                        next_node[1] - distance_y,
+                    )
 
     return len(nodes)
 

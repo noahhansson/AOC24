@@ -23,7 +23,9 @@ def get_second_solution(test: bool = args.test):
     score = 0
     do = True
     for row in inpt:
-        instructions = re.findall("(mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\))", row)
+        instructions = re.findall(
+            "(mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\))", row
+        )
         for instruction in instructions:
             if instruction.startswith("mul") and do:
                 digits = [int(x) for x in re.findall("\d{1,3}", instruction)]

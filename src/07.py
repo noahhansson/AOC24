@@ -19,7 +19,9 @@ def parse_input(test: bool) -> tuple[list[int], list[list[int]]]:
     return targets, terms
 
 
-def try_solve(target: int, current_val: int, terms: list[int], p2: bool = False) -> bool:
+def try_solve(
+    target: int, current_val: int, terms: list[int], p2: bool = False
+) -> bool:
     if (current_val == target) and (len(terms) == 0):
         return True
     elif (current_val > target) or (len(terms) == 0):
@@ -28,7 +30,12 @@ def try_solve(target: int, current_val: int, terms: list[int], p2: bool = False)
         return (
             try_solve(target, current_val + terms[0], terms[1:], p2)
             or try_solve(target, current_val * terms[0], terms[1:], p2)
-            or (p2 and try_solve(target, int(f"{current_val}{terms[0]}"), terms[1:], p2))
+            or (
+                p2
+                and try_solve(
+                    target, int(f"{current_val}{terms[0]}"), terms[1:], p2
+                )
+            )
         )
 
 
