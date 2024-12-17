@@ -135,12 +135,12 @@ def find_register(program: list[int], index: int, current_register: str) -> str:
     if index < 0:
         return current_register
     for x in range(0, 8):
-        try_register = int(f"{current_register}{x:03b}", 2)
+        try_register = int(f"{current_register}{x}", 8)
         comp = Computer(try_register, 0, 0)
         res = next(comp.run_program(program))
         if res == program[index]:
             if (
-                reg := find_register(program, index - 1, f"{try_register :03b}")
+                reg := find_register(program, index - 1, f"{oct(try_register)}")
             ) != "":
                 return reg
     return ""
@@ -152,9 +152,10 @@ def get_second_solution(test: bool = False) -> int:
 
     res = find_register(program, len(program) - 1, "")
 
-    a = int(res, 2)
+    a = int(res, 8)
     comp = Computer(a, b, c)
-    assert list(comp.run_program(program)) == program
+    output = list(comp.run_program(program))
+    assert output == program
 
     return a
 
