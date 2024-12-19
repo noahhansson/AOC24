@@ -12,26 +12,14 @@ def parse_input(test: bool = False) -> tuple[frozenset[str], list[str]]:
 
 
 @cache
-def dfs_p1(design: str, patterns: frozenset[str], max_l: int) -> bool:
-    if design == "":
-        return True
-
-    for pattern_length in range(1, max_l + 1):
-        if design[:pattern_length] in patterns:
-            if dfs_p1(design[pattern_length:], patterns, max_l):
-                return True
-    return False
-
-
-@cache
-def dfs_p2(design: str, patterns: frozenset[str], max_l: int) -> int:
+def dfs(design: str, patterns: frozenset[str], max_l: int) -> int:
     if design == "":
         return 1
 
     score = 0
     for pattern_length in range(1, min(max_l, len(design)) + 1):
         if design[:pattern_length] in patterns:
-            score += dfs_p2(design[pattern_length:], patterns, max_l)
+            score += dfs(design[pattern_length:], patterns, max_l)
     return score
 
 
@@ -44,7 +32,7 @@ def get_first_solution(test: bool = False):
     score = 0
 
     for design in designs:
-        if dfs_p1(design, patterns, max_l):
+        if dfs(design, patterns, max_l) > 0:
             score += 1
 
     return score
@@ -59,7 +47,7 @@ def get_second_solution(test: bool = False):
     score = 0
 
     for design in designs:
-        score += dfs_p2(design, patterns, max_l)
+        score += dfs(design, patterns, max_l)
 
     return score
 
