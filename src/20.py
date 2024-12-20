@@ -48,9 +48,6 @@ def find_distances(
             if (n not in distances) and (n not in walls)
         ]
 
-        if len(neighbours) == 0:
-            raise RuntimeError
-
         assert len(neighbours) == 1
 
         position = neighbours[0]
@@ -76,7 +73,7 @@ def find_shortcuts(pos: Point, max_steps: int) -> set[Point]:
 
 def solve(
     cheat_min: int, cheat_max: int, threshold: int, test: bool = False
-) -> dict[int, int]:
+) -> int:
     walls, start, end = parse_input(test)
 
     distances = find_distances(start, end, walls)
@@ -95,37 +92,30 @@ def solve(
 
                     cheats[time_gain] += 1
 
-    return cheats
+    score = 0
+    for time_gain, n_cheats in cheats.items():
+        if time_gain >= threshold:
+            score += n_cheats
+
+    return score
 
 
 @timer
-def get_first_solution(test: bool = False):
+def get_first_solution(test: bool = False) -> int:
     if test:
         threshold = 1
     else:
         threshold = 100
-    cheats = solve(cheat_min=2, cheat_max=2, threshold=threshold, test=test)
-    score = 0
-    for time_gain, n_cheats in cheats.items():
-        if time_gain >= threshold:
-            score += n_cheats
-
-    return score
+    return solve(cheat_min=2, cheat_max=2, threshold=threshold, test=test)
 
 
 @timer
-def get_second_solution(test: bool = False):
+def get_second_solution(test: bool = False) -> int:
     if test:
         threshold = 50
     else:
         threshold = 100
-    cheats = solve(cheat_min=2, cheat_max=20, threshold=threshold, test=test)
-    score = 0
-    for time_gain, n_cheats in cheats.items():
-        if time_gain >= threshold:
-            score += n_cheats
-
-    return score
+    return solve(cheat_min=2, cheat_max=20, threshold=threshold, test=test)
 
 
 print(f"P1: {get_first_solution(test=args.test)}")
