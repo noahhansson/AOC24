@@ -78,10 +78,13 @@ def solve(
 
     distances = find_distances(start, end, walls)
 
+    # Pre-calculate relative search area to save run time
+    shortcuts_rel = find_shortcuts(Point(0, 0), cheat_max)
+
     cheats: dict[int, int] = defaultdict(int)
 
     for pos in distances.keys():
-        targets = {t for t in find_shortcuts(pos, cheat_max) if t in distances}
+        targets = {pos + s for s in shortcuts_rel if (pos + s) in distances}
         for target in targets:
             if distances[pos] - distances[target] >= threshold:
                 cheat_length = (target - pos).abs()
