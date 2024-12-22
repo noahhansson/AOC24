@@ -1,4 +1,5 @@
 from utils import read_input, timer, setup_args
+from collections import defaultdict, deque
 
 args = setup_args()
 
@@ -16,7 +17,7 @@ def prune(secret: int) -> int:
     return secret & (2**24 - 1)
 
 
-def next_secret(secret: int) -> int:
+def get_next_secret(secret: int) -> int:
     secret = prune(mix(secret, secret << 6))
     secret = prune(mix(secret, secret >> 5))
     secret = prune(mix(secret, secret << 11))
@@ -25,7 +26,7 @@ def next_secret(secret: int) -> int:
 
 
 @timer
-def get_first_solution(test: bool = False):
+def get_first_solution(test: bool = False) -> int:
     start_values = parse_input(test)
 
     score = 0
@@ -34,7 +35,7 @@ def get_first_solution(test: bool = False):
         secret = value
 
         for _ in range(0, 2000):
-            secret = next_secret(secret)
+            secret = get_next_secret(secret)
 
         score += secret
 
@@ -42,48 +43,37 @@ def get_first_solution(test: bool = False):
 
 
 @timer
-def get_second_solution(test: bool = False):
+def get_second_solution(test: bool = False) -> int:
     start_values = parse_input(test)
 
-    score = 0
+    sequence_scores: dict[tuple[int, ...], int] = defaultdict(int)
 
-    # {(Monkey, step): price}
-    prices: dict[tuple[int, int], int] = {}
-    # {(Monkey, step): change}
-    price_changes: dict[tuple[int, int], int] = {}
-
-    for i, value in enumerate(start_values):
+    for value in start_values:
+        price_changes: deque[int] = deque(maxlen=4)
+        seen: set[tuple[int, ...]] = set()
         secret = value
 
-        prices[i, 0] = secret % 10
+        for _ in range(0, 2000):
+            price = secret % 10
 
-        for j in range(0, 2000):
-            secret = next_secret(secret)
-            prices[i, j + 1] = secret % 10
-            price_changes[i, j + 1] = prices[i, j + 1] - prices[i, j]
+            next_secret = get_next_secret(secret)
+            next_price = next_secret % 10
 
-    # {sequence: {monkey: value}}
-    sequence_values: dict[tuple[int, ...], dict[int, int]] = {}
+            price_change = next_price - price
 
-    for i in range(4, 2001):
-        sequence_idx = [i - 3, i - 2, i - 1, i]
-        for monkey in range(len(start_values)):
-            sequence = tuple([price_changes[monkey, x] for x in sequence_idx])
+            price_changes.append(price_change)
 
-            if sequence not in sequence_values:
-                sequence_values[sequence] = {}
+            if len(price_changes) == 4:
+                sequence = tuple(price_changes)
+                if sequence not in seen:
+                    sequence_scores[sequence] += next_price
+                    seen.add(sequence)
 
-            if monkey not in sequence_values[sequence]:
-                sequence_values[sequence][monkey] = prices[monkey, i]
+            secret = next_secret
 
-    max_value = 0
+    max_score = max(sequence_scores.values())
 
-    for sequence in sequence_values.keys():
-        monkey_prices = sequence_values[sequence]
-        if (score := sum(monkey_prices.values())) > max_value:
-            max_value = score
-
-    return max_value
+    return max_score
 
 
 print(f"P1: {get_first_solution(test=args.test)}")
