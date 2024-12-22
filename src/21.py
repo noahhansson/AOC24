@@ -1,7 +1,7 @@
 from utils import read_input, timer, setup_args
 from functools import cache
 from collections import deque
-from itertools import product
+import heapq
 
 args = setup_args()
 
@@ -42,87 +42,98 @@ def get_neighbours_keypad(key: str) -> dict[str, str]:
 
 
 @cache
-def get_path(start: str, end: str, numpad: bool) -> list[list[str]]:
+def shortest_path(start: str, end: str, numpad: bool) -> int:
     queue: deque[tuple[str, list[str]]] = deque()
-
-    max_len: int | None = None
-    paths: list[list[str]] = []
 
     queue.append((start, []))
 
     while queue:
-        position, path = queue.popleft()
+        pos, path = queue.popleft()
 
-        if max_len is not None and len(path) > max_len:
-            return paths
-
-        if position == end:
-            paths.append(path)
-            max_len = len(path)
+        if pos == end:
+            return len(path)
 
         if numpad:
-            neighbours = get_neighbours_numpad(position)
+            neighbours = get_neighbours_numpad(pos)
         else:
-            neighbours = get_neighbours_keypad(position)
+            neighbours = get_neighbours_keypad(pos)
 
         for direction, button in neighbours.items():
             queue.append((button, path + [direction]))
 
+    return -1
+
+
+@cache
+def get_best_path(start: str, end: str, numpad: bool) -> list[str]:
+    queue: list[tuple[int, str, str, list[str]]] = []
+    costs: dict[str, int] = {}
+
+    heapq.heapify(queue)
+    heapq.heappush(queue, (0, start, "A", []))
+
+    costs[start] = 0
+
+    while queue:
+        cost, pos, current_button, path = heapq.heappop(queue)
+
+        if pos == end:
+            return path
+
+        if numpad:
+            neighbours = get_neighbours_numpad(pos)
+        else:
+            neighbours = get_neighbours_keypad(pos)
+
+        for direction, button in neighbours.items():
+            heapq.heappush(
+                queue,
+                (
+                    (
+                        cost
+                        + shortest_path(current_button, direction, False)
+                        + 1,
+                        button,
+                        direction,
+                        path + [direction],
+                    )
+                ),
+            )
+
     return []
 
 
-def press_instructions(instructions: str, numpad: bool) -> list[str]:
-    path_alternatives = []
+def press_instructions(instructions: str, numpad: bool) -> str:
+    path = ""
     for b1, b2 in zip(f"A{instructions}", instructions):
-        path_alternatives.append(get_path(b1, b2, numpad=numpad))
+        path += "".join(get_best_path(b1, b2, numpad=numpad))
+        path += "A"
 
-    paths = product(*path_alternatives)
-    paths_formatted: list[str] = []
-    for path in paths:
-        path_formatted = []
-        for instruction in path:
-            path_formatted += instruction
-            path_formatted += "A"
-        paths_formatted.append("".join(path_formatted))
-
-    return paths_formatted
-
-
-def prune_instructions(instructions: list[str]) -> list[str]:
-    lenghts = {i: len(i) for i in instructions}
-    min_len = min(lenghts.values())
-    return [i for i, length in lenghts.items() if length == min_len]
+    return path
 
 
 def solve(n_robots: int, test: bool) -> int:
     codes = parse_input(test)
-    get_path("A", "<", False)
 
     score = 0
 
     for code in codes:
-        instructions = press_instructions(code, numpad=True)
+        instruction = press_instructions(code, numpad=True)
 
         for i in range(n_robots):
             print(f"Code: {code}, Robot nr {i + 1}")
-            print(f"Number of instructions to parse: {len(instructions)}")
-            instructions_next: list[str] = []
-            for instruction in prune_instructions(instructions):
-                instructions_next += press_instructions(
-                    instruction, numpad=False
-                )
+            instruction = press_instructions(instruction, numpad=False)
 
-            instructions = instructions_next
-
-        min_len = len(prune_instructions(instructions_next)[0])
-        score += int(code.replace("A", "")) * min_len
-        print(f"Code: {code}, min length: {min_len}")
+        score += int(code.replace("A", "")) * len(instruction)
+        print(f"Code: {code}, Length: {len(instruction)}")
 
     return score
 
 
 @timer
 def get_first_solution(test: bool = False) -> int:
+    get_best_path("A", "1", True)
+
     return solve(2, test)
 
 
@@ -131,5 +142,7 @@ def get_second_solution(test: bool = False):
     return solve(25, test)
 
 
+get_best_path("3", "7", True)
+
 print(f"P1: {get_first_solution(test=args.test)}")
-print(f"P2: {get_second_solution(test=args.test)}")
+# print(f"P2: {get_second_solution(test=args.test)}")
